@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -11,6 +11,8 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Surface} from 'react-native-paper';
 import {Slider} from 'react-native-elements';
+import TrackPlayer, {Event, usePlaybackState} from 'react-native-track-player';
+import SliderComponent from './SliderComponent';
 
 const {width, height} = Dimensions.get('screen');
 
@@ -20,15 +22,41 @@ class PlayerComponent extends Component {
     this.state = {
       value: 0.0,
       maxValue: 0.0,
+      isPlaying: false,
     };
   }
 
   componentDidMount() {
-    this.setState({
-      // maxValue: this.props.item.duration / 60,
+    var track = {
+      url: this.props.item.src,
+      title: this.props.item.title,
+      artist: this.props.item.singer,
+      artwork: this.props.item.img,
+      duration: this.props.item.duration,
+    };
+    TrackPlayer.setupPlayer().then(async () => {
+      console.log('Player Ready');
+      await TrackPlayer.reset();
+      await TrackPlayer.add(track);
     });
   }
 
+  componentWillUnmount() {
+    TrackPlayer.pause();
+  }
+
+  playAgain = () => {
+    var track = {
+      url: this.props.item.src,
+      title: this.props.item.title,
+      artist: this.props.item.singer,
+      artwork: this.props.item.img,
+      duration: this.props.item.duration,
+    };
+    TrackPlayer.reset();
+    TrackPlayer.add(track);
+    TrackPlayer.play();
+  };
   render() {
     return (
       <View style={styles.container}>
@@ -40,30 +68,35 @@ class PlayerComponent extends Component {
             <View style={styles.dataContainer}>
               <Text style={styles.title}>{this.props.item.title}</Text>
               <Text style={styles.singer}>{this.props.item.singer}</Text>
-              <TouchableOpacity style={styles.btn}>
-                <Icon name="play" size={30} color="#fff" />
+              <TouchableOpacity style={styles.btn} activeOpacity={0.5}>
+                <Icon
+                  name="play"
+                  size={30}
+                  color="#fff"
+                  onPress={() => TrackPlayer.play()}
+                />
               </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
         <View style={styles.main}>
-          <Slider
-            value={this.state.value}
-            minimumValue={0.0}
-            maximumValue={this.state.maxValue}
-            onValueChange={value => this.setState({value})}
-            thumbStyle={{backgroundColor: '#ff5b77', height: 12, width: 12}}
-            thumbTintColor="red"
-            maximumTrackTintColor="#e5e5e5"
-            minimumTrackTintColor="#ff5b77"
-            trackStyle={{backgroundColor: 'red', height: 1}}
-          />
+          <SliderComponent />
           <View style={styles.actions}>
             <Icon name="shuffle-variant" size={35} color="#000" />
             <Icon name="skip-backward" size={35} color="#000" />
-            <Icon name="play" size={35} color="#000" />
+            <TouchableOpacity>
+              <Icon
+                name="pause"
+                size={35}
+                color="#000"
+                onPress={() => TrackPlayer.pause()}
+              />
+            </TouchableOpacity>
+
             <Icon name="skip-forward" size={35} color="#000" />
-            <Icon name="sync" size={35} color="#000" />
+            <TouchableOpacity onPress={() => this.playAgain()}>
+              <Icon name="sync" size={35} color="#000" />
+            </TouchableOpacity>
           </View>
         </View>
       </View>

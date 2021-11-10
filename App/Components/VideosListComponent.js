@@ -15,13 +15,16 @@ const {width, height} = Dimensions.get('window');
 import {Surface} from 'react-native-paper';
 import firestore from '@react-native-firebase/firestore';
 
-class SOngData extends Component {
+class VIdeoData extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      modalVisible: false,
+    };
   }
 
   playSong = item => {
-    this.props.navigation.navigate('Player', {item: item});
+    this.props.navigation.navigate('Video', {item: item});
   };
 
   openModal = () => {
@@ -37,8 +40,11 @@ class SOngData extends Component {
   };
 
   setFavorite = item => {
-    item.favorite = true;
-    console.log(item.favorite);
+    firestore().collection('Videos').doc(item.id).update({
+      favorite: true,
+    });
+    this.props.navigation.navigate('Favorite');
+    this.closeModal();
   };
 
   render() {
@@ -48,7 +54,7 @@ class SOngData extends Component {
         <Modal
           transparent={true}
           onRequestClose={() => this.closeModal()}
-          visible={false}
+          visible={this.state.modalVisible}
           animationType="slide">
           <View style={{height: '100%', backgroundColor: 'rgba(0,0,0,0.4)'}}>
             <View style={styles.modal}>
@@ -99,21 +105,21 @@ class SOngData extends Component {
   }
 }
 
-class SongsComponent extends Component {
+class VideoComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      songList: [],
+      videoList: [],
     };
     this.songdata = firestore()
-      .collection('Songs')
+      .collection('Videos')
       .onSnapshot(docs => {
-        let songList = [];
+        let videoList = [];
         docs.forEach(doc => {
-          songList.push(doc.data());
+          videoList.push(doc.data());
         });
-        this.setState({songList});
-        // console.log(songList);
+        this.setState({videoList});
+        console.log(videoList);
       });
   }
 
@@ -126,12 +132,12 @@ class SongsComponent extends Component {
       <View style={styles.container}>
         <View style={{padding: 10, paddingTop: 0}}>
           <FlatList
-            data={this.state.songList}
+            data={this.state.videoList}
             showsVerticalScrollIndicator={false}
             ItemSeparatorComponent={() => this.separator()}
             renderItem={({item, index}) => {
               return (
-                <SOngData item={item} navigation={this.props.navigation} />
+                <VIdeoData item={item} navigation={this.props.navigation} />
               );
             }}
           />
@@ -141,7 +147,7 @@ class SongsComponent extends Component {
   }
 }
 
-export default SongsComponent;
+export default VideoComponent;
 
 const styles = StyleSheet.create({
   container: {

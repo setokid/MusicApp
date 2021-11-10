@@ -16,7 +16,7 @@ class VideoComponent extends Component {
           style={{height: height / 3, backgroundColor: 'gray', width: '100%'}}>
           <VideoPlayer
             source={{
-              uri: 'https://vjs.zencdn.net/v/oceans.mp4',
+              uri: this.props.item.src,
             }}
             style={styles.video}
             controls={true}
@@ -24,7 +24,7 @@ class VideoComponent extends Component {
           />
         </View>
         <Text style={styles.videoTitle}>{this.props.item.title}</Text>
-        <Text style={styles.videoArtist}>{this.props.item.subTitle}</Text>
+        <Text style={styles.videoArtist}>{this.props.item.singer}</Text>
       </View>
     );
   }

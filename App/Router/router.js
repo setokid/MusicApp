@@ -4,8 +4,7 @@ import Icon2 from 'react-native-vector-icons/Ionicons';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import Home from '../Screens/Home';
-import Discover from '../Screens/Discover';
-import Video from '../Screens/Video';
+import Favorite from '../Screens/Favorite';
 
 const Tab = createBottomTabNavigator();
 
@@ -38,8 +37,8 @@ function Tabs() {
         }}
       />
       <Tab.Screen
-        name="Discover"
-        component={Discover}
+        name="Favorite"
+        component={Favorite}
         options={{
           tabBarIcon: ({focused, color}) => (
             <Icon name={focused ? 'music' : 'music'} size={28} color={color} />

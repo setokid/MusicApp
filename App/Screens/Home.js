@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {View, StyleSheet, Text, ScrollView} from 'react-native';
-import BannerComponent from '../Components/BannerComponent';
-import CatalogComponent from '../Components/CatalogComponent';
-import SongsComponent from '../Components/SongsComponent';
+import SongsListComponent from '../Components/SongsListComponent';
+import VideoListComponent from '../Components/VideosListComponent';
 
 console.reportErrorsAsExceptions = false;
 
@@ -16,10 +15,10 @@ class Home extends Component {
       <View style={styles.container}>
         <Text style={styles.title}>Music App</Text>
         <ScrollView>
-          <BannerComponent navigation={this.props.navigation} />
-          {/* <CatalogComponent navigation={this.props.navigation} /> */}
           <Text style={styles.title}>Songs</Text>
-          <SongsComponent navigation={this.props.navigation} />
+          <SongsListComponent navigation={this.props.navigation} />
+          <Text style={styles.title}>Videos</Text>
+          <VideoListComponent navigation={this.props.navigation} />
         </ScrollView>
       </View>
     );

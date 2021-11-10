@@ -9,7 +9,8 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
-import FavoriteComponent from '../Components/FavoriteComponent';
+import FavoriteSongComponent from '../Components/FavoriteSongComponent';
+import FavoriteVideoComponent from '../Components/FavoriteVideoComponent';
 class Discover extends Component {
   constructor(props) {
     super(props);
@@ -18,8 +19,8 @@ class Discover extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Favorite</Text>
-        <View style={styles.inputContainer}>
+        <Text style={styles.title}>Music App</Text>
+        {/* <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
             placeholder={'Nhập tên bài hát tại đây...'}
@@ -27,10 +28,12 @@ class Discover extends Component {
           <TouchableOpacity style={styles.searchBtn}>
             <Icon name="ios-search" size={20} color="#000" />
           </TouchableOpacity>
-        </View>
+        </View> */}
         <ScrollView>
           <Text style={styles.title}>Favorite Song</Text>
-          <FavoriteComponent navigation={this.props.navigation} />
+          <FavoriteSongComponent navigation={this.props.navigation} />
+          <Text style={styles.title}>Favorite Video</Text>
+          <FavoriteVideoComponent navigation={this.props.navigation} />
         </ScrollView>
       </View>
     );
