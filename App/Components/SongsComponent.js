@@ -15,139 +15,155 @@ const {width, height} = Dimensions.get('window');
 import {Surface} from 'react-native-paper';
 import {firestore, collection} from '@react-native-firebase/firestore';
 
-function SOngData(props, navigation) {
-  const playSong = item => {
+class SOngData extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  playSong = item => {
     props.navigation.navigate('Player', {item: item});
   };
 
-  const openModal = () => {
+  openModal = () => {
     this.setState({
       modalVisible: true,
     });
   };
 
-  const closeModal = () => {
+  closeModal = () => {
     this.setState({
       modalVisible: false,
     });
   };
 
-  const setFavorite = item => {
+  setFavorite = item => {
     item.favorite = true;
     console.log(item.favorite);
   };
 
-  return (
-    <View>
-      <Modal
-        transparent={true}
-        onRequestClose={() => closeModal()}
-        visible={false}
-        animationType="slide">
-        <View style={{height: '100%', backgroundColor: 'rgba(0,0,0,0.4)'}}>
-          <View style={styles.modal}>
-            <Surface style={styles.surface}>
-              <Image source={props.item.img} style={styles.modalImg} />
-            </Surface>
+  render() {
+    let item = this.props.item;
+    return (
+      <View>
+        <Modal
+          transparent={true}
+          onRequestClose={() => this.closeModal()}
+          visible={false}
+          animationType="slide">
+          <View style={{height: '100%', backgroundColor: 'rgba(0,0,0,0.4)'}}>
+            <View style={styles.modal}>
+              <Surface style={styles.surface}>
+                <Image source={item.img} style={styles.modalImg} />
+              </Surface>
 
-            <View style={styles.modalData}>
-              <View style={styles.playerContainer}>
-                <Text style={styles.title}>{props.item.title}</Text>
-                <Text style={styles.subTitle}>{props.item.subTitle}</Text>
-                <TouchableOpacity style={styles.btn}>
-                  <Icon name="play" size={30} color="#fff" />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.option}>
-                <TouchableOpacity
-                  style={styles.option}
-                  onPress={() => setFavorite(item)}>
-                  <Icon name="heart" size={30} color="#ff5b77" />
-                  <Text style={styles.text}>Add To Favourite</Text>
-                </TouchableOpacity>
+              <View style={styles.modalData}>
+                <View style={styles.playerContainer}>
+                  <Text style={styles.title}>{item.title}</Text>
+                  <Text style={styles.subTitle}>{item.subTitle}</Text>
+                  <TouchableOpacity style={styles.btn}>
+                    <Icon name="play" size={30} color="#fff" />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.option}>
+                  <TouchableOpacity
+                    style={styles.option}
+                    onPress={() => this.setFavorite(item)}>
+                    <Icon name="heart" size={30} color="#ff5b77" />
+                    <Text style={styles.text}>Add To Favourite</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
 
-      <TouchableWithoutFeedback
-        style={styles.songContainer}
-        onPress={() => playSong(props.item)}>
-        <View style={{flexDirection: 'row'}}>
-          <Image source={props.item.img} style={styles.img} />
-          <View style={styles.dataContainer}>
-            <Text style={styles.songtitle}>{props.item.title}</Text>
-            <Text style={styles.subTitle}>{props.item.subTitle}</Text>
-            <Text style={styles.subTitle}>{props.item.duration / 60}</Text>
+        <TouchableWithoutFeedback
+          style={styles.songContainer}
+          onPress={() => this.playSong(item)}>
+          <View style={{flexDirection: 'row'}}>
+            <Image source={item.img} style={styles.img} />
+            <View style={styles.dataContainer}>
+              <Text style={styles.songtitle}>{item.title}</Text>
+              <Text style={styles.subTitle}>{item.subTitle}</Text>
+              <Text style={styles.subTitle}>{item.duration / 60}</Text>
+            </View>
+            <View style={styles.iconContainer}>
+              <TouchableOpacity onPress={() => this.openModal()}>
+                <Icon name="dots-vertical" color="gray" size={30} />
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.iconContainer}>
-            <TouchableOpacity onPress={() => openModal()}>
-              <Icon name="dots-vertical" color="gray" size={30} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
-    </View>
-  );
+        </TouchableWithoutFeedback>
+      </View>
+    );
+  }
 }
 
-const SongsComponent = () => {
-  const [songs] = useState([
-    {
-      title: 'Believer',
-      subTitle: 'Imagine Dragons',
-      duration: 201.6,
-      img: require('../Assets/s1.jpg'),
-      favorite: true,
-      video: 'https://vjs.zencdn.net/v/oceans.mp4',
-    },
-    {
-      title: 'Hall Of Fame',
-      subTitle: 'The Script',
-      duration: 201.6,
-      img: require('../Assets/s2.jpg'),
-      favorite: true,
-    },
-    {
-      title: "It's My Life",
-      subTitle: 'Dr. Alban',
-      duration: 201.6,
-      img: require('../Assets/s3.jpg'),
-      favorite: true,
-    },
-    {
-      title: 'Not Afraid',
-      subTitle: 'Eminem',
-      duration: 201.6,
-      img: require('../Assets/s4.jpg'),
-      favorite: true,
-    },
-    {
-      title: 'I Will Survive',
-      subTitle: 'Gloria Gaynor',
-      duration: 201.6,
-      img: require('../Assets/s5.jpeg'),
-    },
-  ]);
-  const separator = () => {
+class SongsComponent extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  separator = () => {
     return <View style={{height: 10, backgroundColor: '#fff'}} />;
   };
-  return (
-    <View style={styles.container}>
-      <View style={{padding: 10, paddingTop: 0}}>
-        <FlatList
-          data={songs}
-          showsVerticalScrollIndicator={false}
-          ItemSeparatorComponent={() => separator()}
-          renderItem={({item, index}) => {
-            return <SOngData item={item} key={index} />;
-          }}
-        />
+
+  render() {
+    let songs = [
+      {
+        title: 'Believer',
+        subTitle: 'Imagine Dragons',
+        duration: 201.6,
+        img: require('../Assets/s1.jpg'),
+        favorite: true,
+        video: 'https://vjs.zencdn.net/v/oceans.mp4',
+      },
+      {
+        title: 'Hall Of Fame',
+        subTitle: 'The Script',
+        duration: 201.6,
+        img: require('../Assets/s2.jpg'),
+        favorite: true,
+      },
+      {
+        title: "It's My Life",
+        subTitle: 'Dr. Alban',
+        duration: 201.6,
+        img: require('../Assets/s3.jpg'),
+        favorite: true,
+      },
+      {
+        title: 'Not Afraid',
+        subTitle: 'Eminem',
+        duration: 201.6,
+        img: require('../Assets/s4.jpg'),
+        favorite: true,
+      },
+      {
+        title: 'I Will Survive',
+        subTitle: 'Gloria Gaynor',
+        duration: 201.6,
+        img: require('../Assets/s5.jpeg'),
+      },
+    ];
+    return (
+      <View style={styles.container}>
+        <View style={{padding: 10, paddingTop: 0}}>
+          <FlatList
+            data={songs}
+            showsVerticalScrollIndicator={false}
+            ItemSeparatorComponent={() => separator()}
+            renderItem={({item, index}) => {
+              return (
+                <SOngData item={item} navigation={this.props.navigation} />
+              );
+            }}
+          />
+        </View>
       </View>
-    </View>
-  );
-};
+    );
+  }
+}
 
 export default SongsComponent;
 
