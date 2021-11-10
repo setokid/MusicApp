@@ -1,6 +1,6 @@
 import firestore from '@react-native-firebase/firestore';
 
-export async function getSongs() {
+export async function getSongs(onSongReceived) {
   const songData = firestore()
     .collection('Songs')
     .onSnapshot(querySnapshot => {
@@ -12,5 +12,5 @@ export async function getSongs() {
       });
       songData(songList);
     });
-  return () => getSongs(songData);
+  return () => onSongReceived(songData);
 }

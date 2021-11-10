@@ -25,7 +25,7 @@ class PlayerComponent extends Component {
 
   componentDidMount() {
     this.setState({
-      maxValue: this.props.item.duration / 60,
+      // maxValue: this.props.item.duration / 60,
     });
   }
 
@@ -35,11 +35,11 @@ class PlayerComponent extends Component {
         <ScrollView>
           <View style={{height: height + 60}}>
             <Surface style={styles.surface}>
-              <Image source={this.props.item.img} style={styles.img} />
+              <Image source={{uri: this.props.item.img}} style={styles.img} />
             </Surface>
             <View style={styles.dataContainer}>
               <Text style={styles.title}>{this.props.item.title}</Text>
-              <Text style={styles.subTitle}>{this.props.item.subTitle}</Text>
+              <Text style={styles.singer}>{this.props.item.singer}</Text>
               <TouchableOpacity style={styles.btn}>
                 <Icon name="play" size={30} color="#fff" />
               </TouchableOpacity>

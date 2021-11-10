@@ -13,7 +13,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const {width, height} = Dimensions.get('window');
 import {Surface} from 'react-native-paper';
-import {firestore, collection} from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
 
 class SOngData extends Component {
   constructor(props) {
@@ -21,7 +21,7 @@ class SOngData extends Component {
   }
 
   playSong = item => {
-    props.navigation.navigate('Player', {item: item});
+    this.props.navigation.navigate('Player', {item: item});
   };
 
   openModal = () => {
@@ -53,13 +53,13 @@ class SOngData extends Component {
           <View style={{height: '100%', backgroundColor: 'rgba(0,0,0,0.4)'}}>
             <View style={styles.modal}>
               <Surface style={styles.surface}>
-                <Image source={item.img} style={styles.modalImg} />
+                <Image source={{uri: item.img}} style={styles.modalImg} />
               </Surface>
 
               <View style={styles.modalData}>
                 <View style={styles.playerContainer}>
                   <Text style={styles.title}>{item.title}</Text>
-                  <Text style={styles.subTitle}>{item.subTitle}</Text>
+                  <Text style={styles.subTitle}>{item.singer}</Text>
                   <TouchableOpacity style={styles.btn}>
                     <Icon name="play" size={30} color="#fff" />
                   </TouchableOpacity>
@@ -81,11 +81,11 @@ class SOngData extends Component {
           style={styles.songContainer}
           onPress={() => this.playSong(item)}>
           <View style={{flexDirection: 'row'}}>
-            <Image source={item.img} style={styles.img} />
+            <Image source={{uri: item.img}} style={styles.img} />
             <View style={styles.dataContainer}>
               <Text style={styles.songtitle}>{item.title}</Text>
-              <Text style={styles.subTitle}>{item.subTitle}</Text>
-              <Text style={styles.subTitle}>{item.duration / 60}</Text>
+              <Text style={styles.subTitle}>{item.singer}</Text>
+              {/* <Text style={styles.subTitle}>{item.duration / 60}</Text> */}
             </View>
             <View style={styles.iconContainer}>
               <TouchableOpacity onPress={() => this.openModal()}>
@@ -102,6 +102,19 @@ class SOngData extends Component {
 class SongsComponent extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      songList: [],
+    };
+    this.songdata = firestore()
+      .collection('Songs')
+      .onSnapshot(docs => {
+        let songList = [];
+        docs.forEach(doc => {
+          songList.push(doc.data());
+        });
+        this.setState({songList});
+        // console.log(songList);
+      });
   }
 
   separator = () => {
@@ -109,50 +122,13 @@ class SongsComponent extends Component {
   };
 
   render() {
-    let songs = [
-      {
-        title: 'Believer',
-        subTitle: 'Imagine Dragons',
-        duration: 201.6,
-        img: require('../Assets/s1.jpg'),
-        favorite: true,
-        video: 'https://vjs.zencdn.net/v/oceans.mp4',
-      },
-      {
-        title: 'Hall Of Fame',
-        subTitle: 'The Script',
-        duration: 201.6,
-        img: require('../Assets/s2.jpg'),
-        favorite: true,
-      },
-      {
-        title: "It's My Life",
-        subTitle: 'Dr. Alban',
-        duration: 201.6,
-        img: require('../Assets/s3.jpg'),
-        favorite: true,
-      },
-      {
-        title: 'Not Afraid',
-        subTitle: 'Eminem',
-        duration: 201.6,
-        img: require('../Assets/s4.jpg'),
-        favorite: true,
-      },
-      {
-        title: 'I Will Survive',
-        subTitle: 'Gloria Gaynor',
-        duration: 201.6,
-        img: require('../Assets/s5.jpeg'),
-      },
-    ];
     return (
       <View style={styles.container}>
         <View style={{padding: 10, paddingTop: 0}}>
           <FlatList
-            data={songs}
+            data={this.state.songList}
             showsVerticalScrollIndicator={false}
-            ItemSeparatorComponent={() => separator()}
+            ItemSeparatorComponent={() => this.separator()}
             renderItem={({item, index}) => {
               return (
                 <SOngData item={item} navigation={this.props.navigation} />

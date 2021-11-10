@@ -19,7 +19,7 @@ class Home extends Component {
           <BannerComponent navigation={this.props.navigation} />
           {/* <CatalogComponent navigation={this.props.navigation} /> */}
           <Text style={styles.title}>Songs</Text>
-          <SongsComponent />
+          <SongsComponent navigation={this.props.navigation} />
         </ScrollView>
       </View>
     );
